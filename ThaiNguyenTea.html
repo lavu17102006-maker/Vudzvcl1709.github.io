@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Thai Nguyen Tea Shop</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body { 
+			font-family: Arial, sans-serif; 
+			background: 
+				linear-gradient(120deg, #e8f5e9 60%, #c8e6c9 100%),
+				url('https://cdn.pixabay.com/photo/2016/11/29/09/32/tea-1869716_1280.jpg') repeat center center fixed;
+			background-size: cover, 400px 300px;
+			margin: 0; 
+		}
+		.header { 
+			background: url('https://trathaiminh.com/image/catalog/tin-tuc/tra-xanh-1.jpg') center center/cover no-repeat;
+			color: #fff; 
+			padding: 24px 0; 
+			text-align: center; 
+			position: relative;
+		}
+		.header::after {
+			content: "";
+			position: absolute;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: rgba(60, 118, 61, 0.55);
+			z-index: 1;
+			border-radius: 0 0 8px 8px;
+		}
+		.header > * {
+			position: relative;
+			z-index: 2;
+		}
+		.container { max-width: 900px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; }
+		.tea-list { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; }
+		.tea-item { width: 260px; background: #fafafa; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 18px; text-align: center; }
+		.tea-item img { width: 180px; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: box-shadow 0.2s; }
+		.tea-item img:hover { box-shadow: 0 0 0 4px #3c763d44; }
+		.tea-name { font-size: 1.2em; font-weight: bold; margin: 12px 0 6px 0; color: #3c763d; }
+		.tea-price { color: #b4882a; font-size: 1.1em; margin-bottom: 10px; }
+		.modal-bg { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index: 1000; }
+		.modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 10px; padding: 28px 24px; max-width: 400px; box-shadow: 0 2px 16px rgba(0,0,0,0.18); }
+		.modal h2 { margin-top: 0; color: #3c763d; }
+		.close-btn { background: #3c763d; color: #fff; border: none; border-radius: 5px; padding: 8px 18px; cursor: pointer; margin-top: 18px; }
+		.board {
+			margin: 40px auto 0 auto;
+			max-width: 900px;
+			background: #e8f5e9;
+			border-radius: 8px;
+			box-shadow: 0 1px 6px rgba(60,118,61,0.08);
+			padding: 24px;
+			text-align: center;
+			font-size: 1.15em;
+			color: #3c763d;
+		}
+		.modal-img {
+			width: 180px;
+			height: 120px;
+			object-fit: cover;
+			border-radius: 8px;
+			display: block;
+			margin: 0 auto 16px auto;
+		}
+		.buy-btn {
+			background: #b4882a;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			padding: 10px 24px;
+			font-size: 1em;
+			cursor: pointer;
+			margin-top: 12px;
+			transition: background 0.2s;
+		}
+		.buy-btn:hover {
+			background: #3c763d;
+		}
+		.modal-price {
+			font-weight: bold;
+			color: #b4882a;
+			margin-bottom: 10px;
+			font-size: 1.1em;
+		}
+		.tabs {
+			display: flex;
+			justify-content: center;
+			margin-top: 32px;
+			margin-bottom: 0;
+			gap: 12px;
+		}
+		.tab-btn {
+			background: #e8f5e9;
+			color: #3c763d;
+			border: none;
+			border-radius: 6px 6px 0 0;
+			padding: 12px 32px;
+			font-size: 1.1em;
+			cursor: pointer;
+			font-weight: bold;
+			transition: background 0.2s;
+			box-shadow: 0 1px 4px rgba(60,118,61,0.08);
+		}
+		.tab-btn.active {
+			background: #3c763d;
+			color: #fff;
+		}
+		.tab-content {
+			display: none;
+		}
+		.tab-content.active {
+			display: block;
+		}
+		.story-section {
+			max-width: 900px;
+			margin: 0 auto;
+			background: #fff;
+			border-radius: 8px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+			padding: 32px;
+			text-align: center;
+		}
+		.story-imgs {
+			display: flex;
+			justify-content: center;
+			gap: 24px;
+			margin-bottom: 24px;
+			flex-wrap: wrap;
+		}
+		.story-imgs img {
+			width: 220px;
+			height: 140px;
+			object-fit: cover;
+			border-radius: 8px;
+			box-shadow: 0 1px 6px rgba(60,118,61,0.10);
+		}
+		.story-title {
+			font-size: 1.3em;
+			color: #3c763d;
+			font-weight: bold;
+			margin-bottom: 12px;
+		}
+		.story-text {
+			font-size: 1.1em;
+			color: #555;
+			margin-bottom: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<h1>Thai Nguyen Tea Shop</h1>
+		<p>Premium teas from Thai Nguyen, Vietnam</p>
+	</div>
+	<div class="tabs">
+		<button class="tab-btn active" onclick="showTab(0)">Our Tea</button>
+		<button class="tab-btn" onclick="showTab(1)">Picture & Story</button>
+	</div>
+	<div id="tab-ourtea" class="tab-content active">
+		<div class="container">
+			
+			<div class="tea-list">
+				<div class="tea-item">
+					<img src="https://nguyenninhhanoi.com/wp-content/uploads/2022/09/che1.jpg" alt="Green Tea" onclick="showModal(0)">
+					<div class="tea-name">Thai Nguyen Green Tea</div>
+					<div class="tea-price">250,000 VND/kg</div>
+				</div>
+				<div class="tea-item">
+					<img src="https://i0.wp.com/loctancuong.com/wp-content/uploads/2024/01/tra-moc-cau-dac-biet-72024-13.jpg" alt="Oolong Tea" onclick="showModal(1)">
+					<div class="tea-name">Thai Nguyen Oolong Tea</div>
+					<div class="tea-price">320,000 VND/kg</div>
+				</div>
+				<div class="tea-item">
+					<img src="https://traf.vn/wp-content/uploads/2025/04/DSC08838.jpg" alt="Black Tea" onclick="showModal(2)">
+					<div class="tea-name">Thai Nguyen Black Tea</div>
+					<div class="tea-price">210,000 VND/kg</div>
+				</div>
+				<div class="tea-item">
+					<img src="https://thaiminhnguyen.vn/wp-content/uploads/2021/08/z3105405262378_fcf0b3e3f22732e77ae849158224e4ba.jpg" alt="Herbal Tea" onclick="showModal(3)">
+					<div class="tea-name">Thai Nguyen Herbal Tea</div>
+					<div class="tea-price">270,000 VND/kg</div>
+				</div>
+			</div>
+		</div>
+		<div class="board">
+			Welcome to Thai Nguyen Tea Shop! Click on any tea to see details and buy directly. For orders or questions, call or message <b>0984607633</b>.
+		</div>
+	</div>
+	<div id="tab-story" class="tab-content">
+		<div class="story-section">
+			<div class="story-title">The Story of Thai Nguyen Tea</div>
+			<div class="story-imgs">
+				<img src="https://trathaiminh.com/image/catalog/tin-tuc/tra-xanh-1.jpg" alt="Tea Field">
+				<img src="https://nguyenninhhanoi.com/wp-content/uploads/2022/09/che1.jpg" alt="Green Tea">
+				<img src="https://thaiminhnguyen.vn/wp-content/uploads/2021/08/z3105405262378_fcf0b3e3f22732e77ae849158224e4ba.jpg" alt="Herbal Tea">
+			</div>
+			<p class="story-text">
+				Thai Nguyen is the heart of Vietnam's tea culture, where lush green hills and cool climate create the perfect environment for growing premium tea. Generations of farmers have hand-picked leaves at dawn, using traditional methods to craft teas with unique flavors and aromas. Each cup tells a story of dedication, nature, and heritage. Discover the journey from leaf to cup and enjoy the taste of Thai Nguyen!
+			</p>
+		</div>
+	</div>
+	<div class="modal-bg" id="modal-bg">
+		<div class="modal" id="modal-content">
+			<img id="modal-img" class="modal-img" src="" alt="Tea Image">
+			<h2 id="modal-title"></h2>
+			<div class="modal-price" id="modal-price"></div>
+			<p id="modal-origin"></p>
+			<p id="modal-making"></p>
+			<p id="modal-packaging"></p>
+			<button class="buy-btn" id="buy-btn">Buy</button>
+			<button class="close-btn" onclick="closeModal()">Close</button>
+		</div>
+	</div>
+	<script>
+		const teas = [
+			{
+				name: "Thai Nguyen Green Tea",
+				img: "https://nguyenninhhanoi.com/wp-content/uploads/2022/09/che1.jpg",
+				price: "250,000 VND/kg",
+				origin: "Origin: Grown in the highlands of Thai Nguyen, Vietnam, famous for its rich soil and cool climate.",
+				making: "How to make: Fresh tea leaves are hand-picked, steamed, rolled, and dried to preserve their natural flavor and aroma.",
+				packaging: "Packaging: Packed in vacuum-sealed bags to maintain freshness and quality."
+			},
+			{
+				name: "Thai Nguyen Oolong Tea",
+				img: "https://i0.wp.com/loctancuong.com/wp-content/uploads/2024/01/tra-moc-cau-dac-biet-72024-13.jpg",
+				price: "320,000 VND/kg",
+				origin: "Origin: Cultivated in select gardens of Thai Nguyen, blending traditional Vietnamese and Taiwanese methods.",
+				making: "How to make: Leaves are partially oxidized, rolled, and roasted to create a floral and smooth taste.",
+				packaging: "Packaging: Carefully packed in foil-lined pouches to protect the delicate leaves."
+			},
+			{
+				name: "Thai Nguyen Black Tea",
+				img: "https://traf.vn/wp-content/uploads/2025/04/DSC08838.jpg",
+				price: "210,000 VND/kg",
+				origin: "Origin: Sourced from mature tea bushes in Thai Nguyen, harvested during peak season.",
+				making: "How to make: Leaves are fully oxidized and dried, resulting in a bold, malty flavor.",
+				packaging: "Packaging: Sealed in airtight containers to preserve aroma and taste."
+			},
+			{
+				name: "Thai Nguyen Herbal Tea",
+				img: "https://thaiminhnguyen.vn/wp-content/uploads/2021/08/z3105405262378_fcf0b3e3f22732e77ae849158224e4ba.jpg",
+				price: "270,000 VND/kg",
+				origin: "Origin: Made from a blend of Thai Nguyen tea leaves and local herbs, grown in the region's fertile valleys.",
+				making: "How to make: Tea leaves and herbs are carefully selected, dried, and blended to create a refreshing and healthy beverage.",
+				packaging: "Packaging: Packed in eco-friendly paper bags to preserve the herbal aroma and freshness."
+			}
+		];
+		function showModal(idx) {
+			document.getElementById('modal-title').textContent = teas[idx].name;
+			document.getElementById('modal-img').src = teas[idx].img;
+			document.getElementById('modal-price').textContent = teas[idx].price;
+			document.getElementById('modal-origin').textContent = teas[idx].origin;
+			document.getElementById('modal-making').textContent = teas[idx].making;
+			document.getElementById('modal-packaging').textContent = teas[idx].packaging;
+			document.getElementById('modal-bg').style.display = 'block';
+			document.getElementById('buy-btn').onclick = function() {
+				window.open('tel:0984607633');
+			};
+		}
+		function closeModal() {
+			document.getElementById('modal-bg').style.display = 'none';
+		}
+		function showTab(idx) {
+			const tabs = document.querySelectorAll('.tab-btn');
+			const contents = [document.getElementById('tab-ourtea'), document.getElementById('tab-story')];
+			tabs.forEach((tab, i) => tab.classList.toggle('active', i === idx));
+			contents.forEach((c, i) => c.classList.toggle('active', i === idx));
+		}
+	</script>
+</body>
+</html>
